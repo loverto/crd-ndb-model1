@@ -146,6 +146,61 @@ function readFileToArr(fReadName,callback){
     });
 }
 
+/**
+ * 异步读取文件目录下的所有符合条件的文件
+ * @param dirPath 需要读取的文件目录
+ * @param callback 回调函数
+ */
+function readDirToArrForCallback(dirPath,callback){
+    let files = readDirToArr(dirPath,".JPG",true);
+    logger.debug("dirPath",JSON.stringify(dirPath))
+    logger.debug("files",JSON.stringify(files))
+    callback(files)
+    return files;
+}
+/**
+ * 异步读取文件目录下的所有符合条件的文件
+ * @param dirPath 需要读取的文件目录
+ * @param suffix 后缀名称,默认为JPG
+ * @param isIgnoreCase 是否忽略大小写
+ * @param 返回所有的文件
+ */
+function readDirToArr(dirPath,suffix,isIgnoreCase){
+    let files = fs.readdirSync(dirPath);
+    const arr = new Array();
+    for (let i =0; i<files.length; i++){
+        let filename = files[i];
+        let start = filename.lastIndexOf(".");
+        // 文件名称不包含后缀
+        let fileNameWithOutSuffix = filename.substring(0,start);
+        // 从文件名称中截取后缀
+        let orignSuffix = filename.substring(start,filename.length);
+        logger.debug("orignSuffix",orignSuffix,"filename",filename)
+        // 判断是否忽略大小写
+        if (isIgnoreCase){
+            if (orignSuffix.toLocaleLowerCase() == suffix.toLocaleLowerCase()){
+                arr.push(fileNameWithOutSuffix);
+                continue;
+            }
+        }else{
+            if (orignSuffix == suffix){
+                arr.push(fileNameWithOutSuffix);
+                continue;
+            }
+        }
+    }
+    return arr;
+}
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -180,11 +235,13 @@ function main(configObject) {
     logger.debug("corel draw mouse is move arrow")
     // 设置为可移动
     coreldraw.moveAndClick(arrowCoordinate)
-    if (fs.existsSync(textFilePath)){
+    // 调整文本文件路径为图像路径 textFilePath -> imageFilePath
+    if (fs.existsSync(imageFilePath)){
         logger.debug("file is exists")
         //let readFileSync = fs.readFileSync(textFilePath);
         // 按行读取数据
-        readFileToArr(textFilePath,function (dataa) {
+        // let dataa = readDirToArr(imageFilePath);
+        readDirToArrForCallback(imageFilePath,function (dataa) {
             logger.debug("data length"+dataa.length)
 
             let i =0;
@@ -211,7 +268,9 @@ function main(configObject) {
                 for (let j = 0;j<data.length;j++){
 
                     let picfilename = data[j];
+                    logger.debug("picfilename"+picfilename)
                     let picPath = common.getFilePathByFileName(imageFilePath,picfilename);
+                    logger.debug("picPath"+picPath)
                     // 图片路径和模板路径都存在
                     if (fs.existsSync(picPath) && fs.existsSync(modelFilePath)){
                         handler(picPath,null,false,modelCoordinate,picfilename,j)
@@ -356,8 +415,8 @@ function handler(coreldrawHandlerFilePath,model,flag,coordinateArray,filename,nu
         // logger.debug("start adjust"+JSON.stringify(width)+"ImageInnerForHeight:"+JSON.stringify(heightTemp)+"widthAndHeightPosition:"+JSON.stringify(widthAndHeightPosition)+"height:"+JSON.stringify(height)+"widthTemp:"+JSON.stringify(widthTemp)+"heightTemp:"+JSON.stringify(heightTemp))
         let widthAndHeight = imageInnerForWidthAndHeight[i].split(",");
         // 调整图片的高度
-        coreldraw.moveSpinNumber(widthAndHeightPosition[0].split(","),widthAndHeight[0]);
-        sleep.msleep(200)
+        // coreldraw.moveSpinNumber(widthAndHeightPosition[0].split(","),widthAndHeight[0]);
+        // sleep.msleep(200)
         coreldraw.moveSpinNumber(widthAndHeightPosition[1].split(","),widthAndHeight[1]);
         sleep.msleep(200)
     }
@@ -373,18 +432,20 @@ function handler(coreldrawHandlerFilePath,model,flag,coordinateArray,filename,nu
     for (let i = 0;i<imageInner.length;i++){
         let moveCoordinate = imageInner[i].split(",");
         let endCoordinate = modelInner[i].split(",");
-        // 通过快捷键方式对齐，比通过坐标对其更精准
-        dm.keyDown(keycode("shift"))
-        coreldraw.moveAndClick(moveCoordinate);
-        sleep.msleep(200);
-        coreldraw.moveAndClick(endCoordinate);
-        sleep.msleep(200);
-        dm.keyUp(keycode("shift"));
-        sleep.msleep(500);
-        dm.keyPress(keycode("shift"));
-        sleep.msleep(500);
-        dm.keyPress(keycode("c"));
-        dm.keyPress(keycode("e"));
+        logger.debug("start move"+JSON.stringify(moveCoordinate)+"endCoordinate:"+JSON.stringify(endCoordinate))
+        coreldraw.drag(moveCoordinate,endCoordinate)
+        // // 通过快捷键方式对齐，比通过坐标对其更精准
+        // dm.keyDown(keycode("shift"))
+        // coreldraw.moveAndClick(moveCoordinate);
+        // sleep.msleep(200);
+        // coreldraw.moveAndClick(endCoordinate);
+        // sleep.msleep(200);
+        // dm.keyUp(keycode("shift"));
+        // sleep.msleep(500);
+        // dm.keyPress(keycode("shift"));
+        // sleep.msleep(500);
+        // dm.keyPress(keycode("c"));
+        // dm.keyPress(keycode("e"));
         // 点击空白坐标
         sleep.msleep(200)
         coreldraw.moveAndClick(clickWhite)

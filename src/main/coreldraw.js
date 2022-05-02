@@ -273,6 +273,17 @@ function moveAndClick(coor) {
 }
 
 /**
+ * 从A坐标点拖拽到B坐标点
+ * 设置为可移动
+ * @param coorA 操作坐标
+ * @param coorB 操作坐标
+ */
+function drag(coorA,coorB) {
+    console.info(coorA);
+    common.selectAreaByPointArray(coorA,coorB)
+}
+
+/**
  *  关闭模板 Ctrl + F4
  */
 function  closeModel() {
@@ -551,6 +562,7 @@ exports.eas=esc
 exports.findCorelDrawAndFullScreen=findCorelDrawAndFullScreen
 exports.openUModel=openUModel
 exports.moveAndClick=moveAndClick
+exports.drag=drag
 exports.importUModel = importUModel
 exports.saveAsPath = saveAsPath
 exports.closeModel = closeModel

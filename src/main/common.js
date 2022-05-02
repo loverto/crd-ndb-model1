@@ -126,7 +126,7 @@ function  selectAreaByPointArray(point1,point2) {
  */
 function getSequenceNumber(pch,pchIncreateFlag) {
     let result = null;
-    const pchArr = pch.split("-");
+        const pchArr = pch.split("-");
     //增量批次号
     let length = pchArr.length - 1 ;
     // 获取最后一个数字，方便进行累加
