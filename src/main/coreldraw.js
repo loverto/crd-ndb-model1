@@ -287,11 +287,12 @@ function drag(coorA,coorB) {
  *  关闭模板 Ctrl + F4
  */
 function  closeModel() {
-    sleep.msleep(3000)
-    dm.keyDown(keycode("ctrl"))
-    dm.keyPress(keycode("f4"))
-    dm.keyUp(keycode("ctrl"))
-    sleep.msleep(3000)
+    while (findWindowByTitle(".cdr")){
+        sleep.msleep(3000);
+        dm.keyDown(keycode("ctrl"))
+        dm.keyPress(keycode("f4"))
+        dm.keyUp(keycode("ctrl"))
+    }
 }
 
 /**
@@ -357,24 +358,36 @@ function combinePageTurning(commonModel) {
     sleep.msleep(200)
 }
 
+function findWindowByTitle(windowTitle) {
+    var win = dm.findWindow("", windowTitle);
+
+    // 判断窗口是否是激活状态
+    let getWindowState = dmExt.getWindowState(win, 0);
+    if (getWindowState === 1) {
+        console.log("find the windows ")
+        return true
+    } else {
+        console.log("Window not open")
+        return false;
+    }
+}
+
 /**
  * 查找CorelDRAW 16.1位置,打开CorelDRAW 16.1 ,并设置全屏
  */
 function findCorelDrawAndFullScreen(windowTitle){
-    var win = dm.findWindow("",windowTitle);
-    // 判断窗口是否是激活状态
-    let getWindowState = dmExt.getWindowState(win,0);
-    if (getWindowState===1){
-        console.log("find the windows ")
+    if(findWindowByTitle(windowTitle)){
+        var win = dm.findWindow("", windowTitle);
         // 激活窗口
-        dm.setWindowState(win,1);
+        dm.setWindowState(win, 1);
         // 最大化
-        dm.setWindowState(win,4);
-        return true
-    }else {
-        return false;
-        console.log("Window not open")
+        dm.setWindowState(win, 4);
+        return true;
+    }else{
+        console.log("find the windows error")
+        return false
     }
+
 }
 
 

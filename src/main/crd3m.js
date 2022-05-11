@@ -283,23 +283,12 @@ function main(configObject) {
                     // 执行完数组中的值，就保存够13张则保存图片
                     if (j==data.length-1){
                         logger.debug("张数够了，开始保存")
-                        logger.debug("开始获取序列号"+pch+pchIncreateFlag)
-                        // 获取序列号
-                        let result = common.getSequenceNumber(pch,pchIncreateFlag);
-                        logger.debug("获取序列号后的结果"+JSON.stringify(result))
-                        pch = result.pch;
-                        pchIncreateFlag = result.pchIncreateFlag
-                        let crd = {currentBatch:i,currentRow: j,pch:pch,pchIncreateFlag:pchIncreateFlag};
-                        logger.debug("开始存储序列号到数据库中"+JSON.stringify(crd))
-                        db.set('crd',crd)
                         logger.debug("开始替换编号")
                         // 替换编号
-                        // coreldraw.findAndReplaceText(replaceCoordinate,findText,pch);
                         coreldraw.findAndReplaceText(replaceCoordinate,findText,picfilename);
 
                         sleep.msleep(200);
                         logger.debug("开始保存文件")
-                        // let exportPathAbsout = exportModelFilePath + path.sep + pch + fileSuff;
                         let exportPathAbsout = exportModelFilePath + path.sep + picfilename + fileSuff;
                         logger.debug("开始另存为"+exportPathAbsout)
                         coreldraw.saveAsPath(exportPathAbsout);
@@ -311,13 +300,6 @@ function main(configObject) {
                         sleep.msleep(500)
                         logger.debug("关闭完毕")
                         coreldraw.eas();
-                        // 保存当前的序列号
-                        if(db.has("configObject")){
-                            configObject.pch = pch;
-                            db.set("configObject",configObject)
-                            logger.debug("把pch保存到数据库中"+JSON.stringify(configObject))
-                        }
-
                     }
 
                 }
@@ -415,7 +397,6 @@ function handler(coreldrawHandlerFilePath,model,flag,coordinateArray,filename,nu
         // logger.debug("start adjust"+JSON.stringify(width)+"ImageInnerForHeight:"+JSON.stringify(heightTemp)+"widthAndHeightPosition:"+JSON.stringify(widthAndHeightPosition)+"height:"+JSON.stringify(height)+"widthTemp:"+JSON.stringify(widthTemp)+"heightTemp:"+JSON.stringify(heightTemp))
         let widthAndHeight = imageInnerForWidthAndHeight[i].split(",");
         // 调整图片的高度
-        // coreldraw.moveSpinNumber(widthAndHeightPosition[0].split(","),widthAndHeight[0]);
         // sleep.msleep(200)
         coreldraw.moveSpinNumber(widthAndHeightPosition[1].split(","),widthAndHeight[1]);
         sleep.msleep(200)
@@ -433,19 +414,7 @@ function handler(coreldrawHandlerFilePath,model,flag,coordinateArray,filename,nu
         let moveCoordinate = imageInner[i].split(",");
         let endCoordinate = modelInner[i].split(",");
         logger.debug("start move"+JSON.stringify(moveCoordinate)+"endCoordinate:"+JSON.stringify(endCoordinate))
-        coreldraw.drag(moveCoordinate,endCoordinate)
-        // // 通过快捷键方式对齐，比通过坐标对其更精准
-        // dm.keyDown(keycode("shift"))
-        // coreldraw.moveAndClick(moveCoordinate);
-        // sleep.msleep(200);
-        // coreldraw.moveAndClick(endCoordinate);
-        // sleep.msleep(200);
-        // dm.keyUp(keycode("shift"));
-        // sleep.msleep(500);
-        // dm.keyPress(keycode("shift"));
-        // sleep.msleep(500);
-        // dm.keyPress(keycode("c"));
-        // dm.keyPress(keycode("e"));
+        coreldraw.drag(moveCoordinate,endCoordinate);
         // 点击空白坐标
         sleep.msleep(200)
         coreldraw.moveAndClick(clickWhite)
