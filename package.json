@@ -1,6 +1,6 @@
 {
   "name": "crd-ndb-model1",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "description": "CRD内胆包模型一排版工具",
   "main": "dist/main/main.js",
   "scripts": {
