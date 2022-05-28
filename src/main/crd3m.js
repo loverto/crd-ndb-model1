@@ -69,7 +69,7 @@ let imageInner = _.concat(["168,504"],imageInnerForCopyCoordinate)
 // corel draw 调整元素高度的坐标
 let adjustHeightUICoordinate = [181,103]
 // 内胆包 图片的6个高度值
-let imageInnerForWidthAndHeight = ["220,300","225,330","260,360","270,375","285,390","320,430"]
+let imageInnerForWidthAndHeight = ["220,300","225,330","260,360","270,375","285,390","320,434"]
 
 // 内胆包 复制次数
 let innerCopyCount = 5
